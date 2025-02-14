@@ -1,6 +1,7 @@
 require("dotenv").config();
 const express = require("express");
 const cors = require("cors");
+const { ObjectId } = require("mongodb");
 const app = express();
 const port = process.env.PORT || 5000;
 
@@ -51,6 +52,22 @@ async function run() {
     app.get("/artifacts/all", async (req, res) => {
       const result = await artifactsCollection.find().toArray();
       res.json(result);
+    });
+
+    // Get Artifacts data using ID
+    app.get("/artifacts/all/:id", async (req, res) => {
+      try {
+        const id = req.params.id;
+        const query = { _id: new ObjectId(id) };
+        const result = await artifactsCollection.findOne(query);
+
+        if (!result) {
+          return res.status(404).json({ error: "Artifacts not found!" });
+        }
+        res.json(result);
+      } catch (error) {
+        res.status(500).json({ error: "Invalid ID format!" });
+      }
     });
 
     // Store artifact data in Artifacts DB
