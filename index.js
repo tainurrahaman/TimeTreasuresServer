@@ -20,6 +20,7 @@ const client = new MongoClient(uri, {
 });
 
 const userCollection = client.db("ArtifactsDB").collection("users");
+const artifactsCollection = client.db("ArtifactsDB").collection("artifacts");
 
 async function run() {
   try {
@@ -33,16 +34,29 @@ async function run() {
     });
 
     // Add user in DB
-
     app.post("/users", async (req, res) => {
       const newUser = req.body;
       const { email, name, photo } = newUser;
-
       const result = await userCollection.insertOne({
         email,
         name,
         photo,
       });
+      res.send(result);
+    });
+
+    // Artifacts APIs
+
+    // Get all Artifacts (without filters)
+    app.get("/artifacts/all", async (req, res) => {
+      const result = await artifactsCollection.find().toArray();
+      res.json(result);
+    });
+
+    // Store artifact data in Artifacts DB
+    app.post("/artifacts", async (req, res) => {
+      const newArtifact = req.body;
+      const result = await artifactsCollection.insertOne(newArtifact);
       res.send(result);
     });
 
