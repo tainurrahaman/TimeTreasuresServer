@@ -77,6 +77,24 @@ async function run() {
       res.send(result);
     });
 
+    // Update artifacts Data using Id
+
+    app.patch("/artifacts/all/:id", async (req, res) => {
+      const id = req.params.id;
+      const artifactsData = req.body;
+      const filter = { _id: new ObjectId(id) };
+      const updateArtifacts = {
+        $set: {
+          totalLikeCount: artifactsData.count,
+        },
+      };
+      const result = await artifactsCollection.updateOne(
+        filter,
+        updateArtifacts
+      );
+      res.send(result);
+    });
+
     // Connect the client to the server	(optional starting in v4.7)
     await client.connect();
 
