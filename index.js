@@ -54,6 +54,16 @@ async function run() {
       res.json(result);
     });
 
+    // Get most Liked 6 artifacts
+    app.get("/artifacts/mostLiked", async (req, res) => {
+      const result = await artifactsCollection
+        .find()
+        .sort({ totalLikeCount: -1 })
+        .limit(6)
+        .toArray();
+      res.json(result);
+    });
+
     // Get Artifacts data using ID
     app.get("/artifacts/all/:id", async (req, res) => {
       try {
