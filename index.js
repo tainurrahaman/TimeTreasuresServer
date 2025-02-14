@@ -19,10 +19,36 @@ const client = new MongoClient(uri, {
   },
 });
 
+const userCollection = client.db("ArtifactsDB").collection("users");
+
 async function run() {
   try {
+    // Users APIs
+
+    // Get all user from DB
+    app.get("/users", async (req, res) => {
+      const cursor = userCollection.find();
+      const result = await cursor.toArray();
+      res.send(result);
+    });
+
+    // Add user in DB
+
+    app.post("/users", async (req, res) => {
+      const newUser = req.body;
+      const { email, name, photo } = newUser;
+
+      const result = await userCollection.insertOne({
+        email,
+        name,
+        photo,
+      });
+      res.send(result);
+    });
+
     // Connect the client to the server	(optional starting in v4.7)
     await client.connect();
+
     // Send a ping to confirm a successful connection
     await client.db("admin").command({ ping: 1 });
     console.log(
