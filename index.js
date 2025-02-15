@@ -64,6 +64,13 @@ async function run() {
       res.json(result);
     });
 
+    // Get Artifacts added by a specific user (using email)
+    app.get("/artifacts", async (req, res) => {
+      const { email } = req.query;
+      const result = await artifactsCollection.find({ email }).toArray();
+      res.json(result);
+    });
+
     // Get Artifacts data using ID
     app.get("/artifacts/all/:id", async (req, res) => {
       try {
@@ -105,8 +112,17 @@ async function run() {
       res.send(result);
     });
 
+    // Delete artifacts using ID(single artifact)
+
+    app.delete("/artifacts/all/:id", async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: new ObjectId(id) };
+      const result = await artifactsCollection.deleteOne(query);
+      res.send(result);
+    });
+
     // Connect the client to the server	(optional starting in v4.7)
-    await client.connect();
+    // await client.connect();
 
     // Send a ping to confirm a successful connection
     await client.db("admin").command({ ping: 1 });
