@@ -94,9 +94,9 @@ async function run() {
       res.send(result);
     });
 
-    // Update artifacts Data using Id
+    // Update artifacts Data when like (using Id)
 
-    app.patch("/artifacts/all/:id", async (req, res) => {
+    app.patch("/artifacts/all/:id/like", async (req, res) => {
       const id = req.params.id;
       const artifactsData = req.body;
       const filter = { _id: new ObjectId(id) };
@@ -109,6 +109,34 @@ async function run() {
         filter,
         updateArtifacts
       );
+      res.send(result);
+    });
+
+    // Update artifacts Data when change (using Id)
+
+    app.patch("/artifacts/all/:id", async (req, res) => {
+      const id = req.params.id;
+      const artifactsData = req.body;
+      const filter = { _id: new ObjectId(id) };
+      const updateArtifacts = {
+        $set: {
+          artifacts_name: artifactsData.artifacts_name,
+          fee: artifactsData.fee,
+          user_email: artifactsData.user_email,
+          user_name: artifactsData.user_name,
+          type: artifactsData.type,
+          create: artifactsData.create,
+          description: artifactsData.description,
+          discover: artifactsData.discover,
+          discover_by: artifactsData.discover_by,
+          location: artifactsData.location,
+        },
+      };
+      const result = await artifactsCollection.updateOne(
+        filter,
+        updateArtifacts
+      );
+
       res.send(result);
     });
 
